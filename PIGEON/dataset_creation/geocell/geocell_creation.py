@@ -36,7 +36,7 @@ from config import COUNTRY_PATH, ADMIN_1_PATH, ADMIN_2_PATH, MIN_CELL_SIZE, MAX_
 CRS = 'EPSG:4326'
 
 # Modified
-NEEDED_COLS = ['id', 'lat', 'lng', 'country']
+NEEDED_COLS = ['id', 'latitude', 'longitude', 'country']
 # NEEDED_COLS = ['id', 'lat', 'lng', 'selection', 'country_name']
 
 LEVEL_NAMES = ['country_id', 'admin_1_id', 'admin_2_id']
@@ -54,6 +54,7 @@ class GeocellCreator:
             df (pd.DataFrame): Pandas dataframe used during training.
             output_file (str): Where the geocells should be saved to.
         """
+        # Modified
         assert all([x in df.columns for x in NEEDED_COLS]), f'Dataframe must contain all of the following \
             columns: {NEEDED_COLS}. Also, "selection" is used to filter out all rows with value "train".'
         
