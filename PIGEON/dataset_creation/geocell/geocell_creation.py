@@ -34,7 +34,11 @@ from config import COUNTRY_PATH, ADMIN_1_PATH, ADMIN_2_PATH, MIN_CELL_SIZE, MAX_
 
 # Constants
 CRS = 'EPSG:4326'
-NEEDED_COLS = ['id', 'lat', 'lng', 'selection', 'country_name']
+
+# Modified
+NEEDED_COLS = ['id', 'lat', 'lng', 'country']
+# NEEDED_COLS = ['id', 'lat', 'lng', 'selection', 'country_name']
+
 LEVEL_NAMES = ['country_id', 'admin_1_id', 'admin_2_id']
 
 # Special Country Lists
@@ -58,7 +62,10 @@ class GeocellCreator:
         self.cells = None
 
         # Load dataframe
-        self.df = df[df['selection'] == 'train'].copy().reset_index()
+
+        # Modified
+        self.df = df
+        # self.df = df[df['selection'] == 'train'].copy().reset_index()
 
         keep_cols = [x for x in self.df.columns if x in NEEDED_COLS or x in LEVEL_NAMES]
         self.df = self.df[keep_cols].copy()
@@ -102,8 +109,7 @@ class GeocellCreator:
                 self.df = self._assign_boundary_ids(self.df, boundary, name)
                 self.df = self._apply_nearest_match(self.df, name)
 
-            # Modified: Alex
-            self.df.to_csv('data/data_yfcc_augmented_non_contaminated.csv', index=False)
+            #self.df.to_csv('data/data_yfcc_augmented_non_contaminated.csv', index=False)
         
         else:
             boundaries = self._load_geo_boundaries(most_granular=True)
