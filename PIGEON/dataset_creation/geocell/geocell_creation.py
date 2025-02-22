@@ -70,7 +70,7 @@ class GeocellCreator:
 
         keep_cols = [x for x in self.df.columns if x in NEEDED_COLS or x in LEVEL_NAMES]
         self.df = self.df[keep_cols].copy()
-        self.df = gpd.GeoDataFrame(self.df, geometry=gpd.points_from_xy(self.df.lng, self.df.lat), crs='EPSG:4326')
+        self.df = gpd.GeoDataFrame(self.df, geometry=gpd.points_from_xy(self.df.longitude, self.df.latitude), crs='EPSG:4326')
 
     def generate(self, min_cell_size: int=MIN_CELL_SIZE, max_cell_size: int=MAX_CELL_SIZE):
         """Generate geocells.

@@ -12,22 +12,22 @@ class NaiveCell:
         assert len(points) > 0, 'No points were passed.'
         self.points = points
         
-        self.min_lng = min(points, key=lambda p: p.lng).lng
-        self.max_lng = max(points, key=lambda p: p.lng).lng
-        self.min_lat = min(points, key=lambda p: p.lat).lat
-        self.max_lat = max(points, key=lambda p: p.lat).lat
+        self.min_lng = min(points, key=lambda p: p.longitude).longitude
+        self.max_lng = max(points, key=lambda p: p.longitude).longitude
+        self.min_lat = min(points, key=lambda p: p.latitude).latitude
+        self.max_lat = max(points, key=lambda p: p.latitude).latitude
         
     @property
     def longitudes(self):
-        return np.array([x.lng for x in self.points])
+        return np.array([x.longitude for x in self.points])
     
     @property
     def latitudes(self):
-        return np.array([x.lat for x in self.points])
+        return np.array([x.latitude for x in self.points])
     
     @property
     def centroid(self):
-        return np.mean(self.longitudes), np.mean(self.latitudes) 
+        return np.mean(self.longitudes), np.mean(self.latitudeitudes) 
     
     @property
     def area(self):
@@ -47,14 +47,14 @@ class NaiveCell:
         if split_on_lat:
             thresh = (self.max_lat + self.min_lat) / 2
             for p in self.points:
-                if p.lat < thresh: 
+                if p.latitude < thresh: 
                     p1.add(p)
                 else: 
                     p2.add(p)
         else:
             thresh = (self.max_lng + self.min_lng) / 2
             for p in self.points:
-                if p.lng < thresh: 
+                if p.longitude < thresh: 
                     p1.add(p)
                 else: 
                     p2.add(p)

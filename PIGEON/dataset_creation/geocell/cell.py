@@ -202,7 +202,7 @@ class Cell:
         """
         data = [[self.cell_id, p.x, p.y] for p in self.points]
         df = pd.DataFrame(data=data, columns=CELL_COLUMNS)
-        df = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.lng, df.lat), crs=CRS)
+        df = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude), crs=CRS)
         return df
 
     def __separate_points(self, points: List[Point], polygons: List[Polygon],
@@ -310,7 +310,7 @@ class Cell:
         assigned_df = df[df['cluster'].isin(non_null_large_clusters)]
         unassigned_df = df[df['cluster'].isin(non_null_large_clusters) == False]
         cc = assigned_df.groupby(['cluster'])[['lng', 'lat']].mean().reset_index()
-        cc = gpd.GeoDataFrame(cc, geometry=gpd.points_from_xy(cc.lng, cc.lat), crs=CRS)
+        cc = gpd.GeoDataFrame(cc, geometry=gpd.points_from_xy(cc.longitude, cc.latitude), crs=CRS)
 
         # Assign unassigned points
         nearest_index = cc.sindex.nearest(unassigned_df.geometry, return_all=False)[1]
@@ -327,7 +327,7 @@ class Cell:
             new_cells = []
             for cluster, polygon in zip(cc['cluster'].unique(), polygons):
                 cluster_coords = df[df['cluster'] == cluster][['lng', 'lat']]
-                cluster_points = [Point(row.lng, row.lat) for _, row in cluster_coords.iterrows()]
+                cluster_points = [Point(row.longitude, row.latitude) for _, row in cluster_coords.iterrows()]
                 new_cell = self.__separate_points(cluster_points, [polygon], contain_points=True)
                 new_cells.append(new_cell)
 
@@ -352,7 +352,7 @@ class Cell:
 
         # Get dataframe
         df = pd.DataFrame(data=self.coords, columns=['lng', 'lat'])
-        df = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.lng, df.lat), crs=CRS)
+        df = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude), crs=CRS)
 
         # Cluster
         clusterer = OPTICS(min_samples=cluster_args[0], xi=cluster_args[1])
