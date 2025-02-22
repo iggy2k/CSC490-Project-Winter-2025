@@ -65,7 +65,7 @@ class GeocellCreator:
         # Load dataframe
 
         # Modified
-        self.df = df
+        self.df = df.reset_index()
         # self.df = df[df['selection'] == 'train'].copy().reset_index()
 
         keep_cols = [x for x in self.df.columns if x in NEEDED_COLS or x in LEVEL_NAMES]
