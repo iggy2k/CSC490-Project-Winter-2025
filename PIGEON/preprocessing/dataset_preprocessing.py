@@ -53,7 +53,7 @@ def load_geocell_df(path: str=GEOCELL_PATH) -> gpd.GeoDataFrame:
     """
     geocell_df = pd.read_csv(path)
     geocell_df['polygon'] = geocell_df['polygon'].apply(wkt.loads)
-    geocell_df = gpd.GeoDataFrame(geocell_df, geometry=gpd.points_from_xy(geocell_df.lng, geocell_df.lat), crs='EPSG:4326')
+    geocell_df = gpd.GeoDataFrame(geocell_df, geometry=gpd.points_from_xy(geocell_df.longitude, geocell_df.latitude), crs='EPSG:4326')
     geocell_df = geocell_df.set_geometry('geometry')
     return geocell_df
 
@@ -147,7 +147,7 @@ def generate_label_cells(example: Dict, geocell_df: gpd.GeoDataFrame=None,
         Dict: modified dataset sample
     """
     try:
-        longitude, latitude = example['lng'], example['lat']
+        longitude, latitude = example['longitude'], example['latitude']
     except KeyError:
         longitude, latitude = example['labels'][0], example['labels'][1]
 
@@ -319,7 +319,7 @@ def preprocess(dataset: DatasetDict, geocell_path: str, embedder: Any=None,
     # Create labels for cells
     dataset = dataset.map(lambda x: generate_label_cells(x, geocell_df, False),
                           num_proc=8, keep_in_memory=False)  # TODO: batch label creation
-    dataset = dataset.remove_columns(['lng', 'lat'])
+    dataset = dataset.remove_columns(['longitude', 'latitude'])
 
     # Create labels for multi-task
     if multi_task:

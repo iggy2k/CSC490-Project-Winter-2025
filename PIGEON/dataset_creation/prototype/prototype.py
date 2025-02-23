@@ -84,10 +84,10 @@ class ProtoDataset:
         self.df['cluster'] = self.df.progress_apply(self.__get_cluster_id, axis=1)
 
         # Compute prototypes from clusters
-        centroids = self.df.groupby(['geocell_idx', 'cluster']).agg(lng=('lng', 'mean'),
-                                                                    lat=('lat', 'mean'),
-                                                                    count=('lng', len),
-                                                                    indices=('lng', self.__get_indices))
+        centroids = self.df.groupby(['geocell_idx', 'cluster']).agg(longitude=('longitude', 'mean'),
+                                                                    latitude=('latitude', 'mean'),
+                                                                    count=('longitude', len),
+                                                                    indices=('longitude', self.__get_indices))
         centroids = centroids.reset_index(drop=False)
         centroids = centroids.loc[centroids['cluster'] != -1].copy()
         
@@ -127,7 +127,7 @@ class ProtoDataset:
         Returns:
             np.ndarray: Distances.
         """
-        points = df[['lng', 'lat']].values
+        points = df[['longitude', 'latitude']].values
         distances = haversine_matrix_np(points, points.T)
         distances = np.where(distances == 0, 1e-5, distances)
         return distances
@@ -175,6 +175,6 @@ class ProtoDataset:
 
 if __name__ == '__main__':
     data_df = pd.read_csv(METADATA_PATH_YFCC)
-    data_df = gpd.GeoDataFrame(data_df, geometry=gpd.points_from_xy(data_df.lng, data_df.lat), crs='EPSG:4326')
+    data_df = gpd.GeoDataFrame(data_df, geometry=gpd.points_from_xy(data_df.longitude, data_df.latitude), crs='EPSG:4326')
     dataset = ProtoDataset(data_df, DATASET_PATH_YFCC, 'data_prototypes_YFCC_100.csv')
     dataset.generate()

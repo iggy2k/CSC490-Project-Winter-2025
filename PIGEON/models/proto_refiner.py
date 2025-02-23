@@ -180,8 +180,8 @@ class ProtoRefiner(nn.Module):
                 top_distances.append(torch.max(logits).item())
                 pred_id = torch.argmax(logits, dim=-1)
                 entry = self.protos[cell.item()][pred_id.item()]
-                lng, lat = self._within_cluster_refinement(emb, entry)
-                top_preds.append([lng, lat])
+                longitude, latitude = self._within_cluster_refinement(emb, entry)
+                top_preds.append([longitude, latitude])
 
             # Temperature softmax over cluster candidates
             top_distances = torch.tensor(top_distances, device='cuda')
@@ -239,10 +239,10 @@ class ProtoRefiner(nn.Module):
             cluster (Dict[str, Tensor]): Huggingface dataset entry.
 
         Returns:
-            Tuple[float, float]: (lng, lat)
+            Tuple[float, float]: (longitude, latitude)
         """
         if cluster['count'] == 1:
-            return cluster['lng'].item(), cluster['lat'].item()
+            return cluster['longitude'].item(), cluster['latitude'].item()
 
         points = self.dataset['train'][cluster['indices']]
         embeddings = points['embedding'].to('cuda')

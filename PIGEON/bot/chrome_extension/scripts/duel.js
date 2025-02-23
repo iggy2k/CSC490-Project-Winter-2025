@@ -67,7 +67,7 @@
 
     let result;
     do {
-      result = await submitGuess(guess.results.lat, guess.results.lng, currentRoundNumber);
+      result = await submitGuess(guess.results.latitude, guess.results.longitude, currentRoundNumber);
       console.log(result.body);
       if (!result.body.currentRoundNumber) {
         currentRoundNumber += 1;
@@ -137,7 +137,7 @@ async function waitTillDisappears(selector) {
   }
 }
 
-async function submitGuess(lat, lng, roundNumber) {
+async function submitGuess(latitude, longitude, roundNumber) {
   const gameID = getGameID();
   apiURL = "https://game-server.geoguessr.com/api/duels/" + gameID + "/guess";
   if (window.location.href.includes('battle-royale')) {
@@ -145,8 +145,8 @@ async function submitGuess(lat, lng, roundNumber) {
   }
 
   const payload = {
-    lat: lat,
-    lng: lng,
+    latitude: latitude,
+    longitude: longitude,
     roundNumber: roundNumber,
   };
 

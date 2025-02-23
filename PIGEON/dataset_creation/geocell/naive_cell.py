@@ -4,8 +4,8 @@ from shapely import geometry
 
 class Point(NamedTuple):
     idx: int
-    lng: float
-    lat: float
+    longitude: float
+    latitude: float
 
 class NaiveCell:
     def __init__(self, points: Set[Point]):

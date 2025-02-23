@@ -53,7 +53,7 @@ class SuperGuessr(nn.Module):
                 Defaults to False.
             yfcc (bool, optional): Whether the model is being trained on YFCC data. Defaults to False.
             serving (bool, optional): Whether model is instantiated for serving purposes only. If set to 
-                True, outputs solely lng/lat predictions in eval mode.
+                True, outputs solely longitude/latitude predictions in eval mode.
             freeze_base (bool, optional): If the weights of the base model should be frozen.
                 Defaults to False.
             num_candidates (int, optional): Number of geocell candidates to
@@ -169,7 +169,7 @@ class SuperGuessr(nn.Module):
             Tensor: ECEF geocell centroids
         """
         geo_df = pd.read_csv(path)
-        lla_coords = torch.tensor(geo_df[['lng', 'lat']].values)
+        lla_coords = torch.tensor(geo_df[['longitude', 'latitude']].values)
         lla_geocells = nn.parameter.Parameter(data=lla_coords, requires_grad=False)
         return lla_geocells
 

@@ -89,7 +89,7 @@ class BenchmarkDataset(Dataset):
         """
         if type(index) == str:
             if index == 'labels':
-                return self.df[['lng', 'lat']].values
+                return self.df[['longitude', 'latitude']].values
             
             elif index == 'labels_clf':
                 return self.df['geocell_idx_yfcc'].values
@@ -101,6 +101,6 @@ class BenchmarkDataset(Dataset):
         _, image = self._load_jpg(sample['image'])
         images = self._crop_images(image)
         model_inputs = feature_extractor(images=images, return_tensors='pt')
-        model_inputs['labels'] = torch.tensor(sample[['lng', 'lat']])
+        model_inputs['labels'] = torch.tensor(sample[['longitude', 'latitude']])
         model_inputs['labels_clf'] = torch.tensor(sample['geocell_idx_yfcc'])
         return model_inputs

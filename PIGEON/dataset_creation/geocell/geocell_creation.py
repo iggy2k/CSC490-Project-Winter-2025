@@ -201,7 +201,7 @@ class GeocellCreator:
         
         # https://github.com/geopandas/geopandas/issues/2823
         found_points = df.sindex.query(ref_df.geometry, predicate='covers')
-        
+
         for i in range(len(ref_df.index)):
             mask = (found_points[0] == i)
             indices = found_points[1][mask].tolist()

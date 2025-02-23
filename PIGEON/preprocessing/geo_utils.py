@@ -24,8 +24,8 @@ def haversine_np(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     """Computes the haversine distance between two sets of points
 
     Args:
-        x (np.ndarray): points 1 (lon, lat)
-        y (np.ndarray): points 2 (lon, lat)
+        x (np.ndarray): points 1 (lon, latitude)
+        y (np.ndarray): points 2 (lon, latitude)
 
     Returns:
         np.ndarray: haversine distance in km
@@ -41,8 +41,8 @@ def haversine(x: Tensor, y: Tensor) -> Tensor:
     """Computes the haversine distance between two sets of points
 
     Args:
-        x (Tensor): points 1 (lon, lat)
-        y (Tensor): points 2 (lon, lat)
+        x (Tensor): points 1 (lon, latitude)
+        y (Tensor): points 2 (lon, latitude)
 
     Returns:
         Tensor: haversine distance in km
@@ -59,8 +59,8 @@ def haversine_matrix(x: Tensor, y: Tensor) -> Tensor:
     """Computes the haversine distance between two matrices of points
 
     Args:
-        x (Tensor): matrix 1 (lon, lat) -> shape (N, 2)
-        y (Tensor): matrix 2 (lon, lat) -> shape (2, M)
+        x (Tensor): matrix 1 (lon, latitude) -> shape (N, 2)
+        y (Tensor): matrix 2 (lon, latitude) -> shape (2, M)
 
     Returns:
         Tensor: haversine distance in km -> shape (N, M)
@@ -78,8 +78,8 @@ def haversine_matrix_np(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     """Computes the haversine distance between two matrices of points
 
     Args:
-        x (np.ndarray): matrix 1 (lon, lat) -> shape (N, 2)
-        y (np.ndarray): matrix 2 (lon, lat) -> shape (2, M)
+        x (np.ndarray): matrix 1 (lon, latitude) -> shape (N, 2)
+        y (np.ndarray): matrix 2 (lon, latitude) -> shape (2, M)
 
     Returns:
         np.ndarray: haversine distance in km -> shape (N, M)
@@ -97,7 +97,7 @@ def lla2ecef_np(coords: np.ndarray) -> np.ndarray:
     """Converts longitude and latitude to 3D coordinates
 
     Args:
-        coords (np.ndarray): array of (lon, lat)
+        coords (np.ndarray): array of (lon, latitude)
 
     Returns:
         np.ndarray: 3d coordinates
@@ -121,7 +121,7 @@ def lla2ecef(coords: Tensor) -> Tensor:
     """Converts longitude and latitude to 3D coordinates
 
     Args:
-        coords (Tensor): array of (lon, lat)
+        coords (Tensor): array of (lon, latitude)
 
     Returns:
         Tensor: 3d coordinates
@@ -250,8 +250,8 @@ def ecef2lla(coords: Tensor, device: torch.device) -> Tensor:
     rho = torch.norm(coords[:, :2], dim=-1, keepdim=True)
 
     # Compute latitude
-    lat = cylindrical2geodetic(rho, z, rad_torch, f_torch, device)
+    latitude = cylindrical2geodetic(rho, z, rad_torch, f_torch, device)
 
     # Longitude and latitude
-    ll = torch.hstack([lon, lat]) * 180 / torch.pi
+    ll = torch.hstack([lon, latitude]) * 180 / torch.pi
     return ll

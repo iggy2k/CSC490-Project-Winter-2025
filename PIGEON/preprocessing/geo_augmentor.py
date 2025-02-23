@@ -108,7 +108,7 @@ class GeoAugmentor:
             self.country_df = gpd.read_file(f'{self.path_prefix}{GADM_PATH}', layer=COUNTRY_LAYER)
 
         # Compute country
-        geo_data = gpd.GeoDataFrame(data, crs=CRS, geometry=gpd.points_from_xy(data.lng, data.lat))
+        geo_data = gpd.GeoDataFrame(data, crs=CRS, geometry=gpd.points_from_xy(data.longitude, data.latitude))
         for _, row in tqdm(self.country_df.iterrows()):
             name = row['COUNTRY']
             indices = geo_data.sindex.query(row.geometry, predicate='covers')
@@ -149,10 +149,10 @@ class GeoAugmentor:
         if self.area_df is None:
             self.area_df = gpd.read_file(f'{self.path_prefix}{GADM_PATH}', layer=AREA_LAYER)
 
-        geo_data = gpd.GeoDataFrame(data, crs=CRS, geometry=gpd.points_from_xy(data.lng, data.lat))
+        geo_data = gpd.GeoDataFrame(data, crs=CRS, geometry=gpd.points_from_xy(data.longitude, data.latitude))
 
         # Compute geo area
-        geo_data = gpd.GeoDataFrame(data, crs=CRS, geometry=gpd.points_from_xy(data.lng, data.lat))
+        geo_data = gpd.GeoDataFrame(data, crs=CRS, geometry=gpd.points_from_xy(data.longitude, data.latitude))
         for _, row in tqdm(self.area_df.iterrows()):
             name = row['NAME_1']
             indices = geo_data.sindex.query(row.geometry, predicate='covers')
@@ -200,7 +200,7 @@ class GeoAugmentor:
         logger.warning('Augmenting dataset with WorldClim climate data.')
         
         # Get climate data
-        coords = data[['lat', 'lng']].values.T
+        coords = data[['latitude', 'longitude']].values.T
         temp_avg, temp_diff, prec_avg, prec_diff = [], [], [], []
         for i in tqdm(range(0, len(data.index), batch_size)):
             batch_coords = coords[:, i:i+batch_size]
@@ -232,7 +232,7 @@ class GeoAugmentor:
         return data
 
     def __augment_elevation_point(self, row: pd.Series) -> int:
-        return self.elevation_data.get_elevation(row.lat, row.lng)
+        return self.elevation_data.get_elevation(row.latitude, row.longitude)
 
     def augment_elevation(self, data: pd.DataFrame) -> pd.DataFrame:
         """Augment dataset with SRTM elevation data
@@ -248,7 +248,7 @@ class GeoAugmentor:
             handler = FileHandler(local_cache_dir=f'{self.path_prefix}{SRTM_SAVE_PATH}')
             self.elevation_data = srtm.get_data(srtm1=False, file_handler=handler)
 
-        data['elevation'] = data[['lat', 'lng']].progress_apply(self.__augment_elevation_point, axis=1)
+        data['elevation'] = data[['latitude', 'longitude']].progress_apply(self.__augment_elevation_point, axis=1)
         return data
 
     def __augment_population_point(self, point: pd.Series) -> float:
@@ -270,13 +270,13 @@ class GeoAugmentor:
         if self.population_file is None:
             self.population_file = gr.from_file(f'{self.path_prefix}{GHSL_PATH}')
 
-        geo_data = gpd.GeoDataFrame(data, crs=CRS, geometry=gpd.points_from_xy(data.lng, data.lat))
+        geo_data = gpd.GeoDataFrame(data, crs=CRS, geometry=gpd.points_from_xy(data.longitude, data.latitude))
         geo_data = geo_data.to_crs(MOLLWEIDE)
         data['population'] = geo_data.progress_apply(self.__augment_population_point, axis=1)
         return data
 
     def __augment_climate_zone_point(self, row: pd.Series) -> float:
-        zone_id = self.climate_zone_file.map_pixel(row.lng, row.lat)
+        zone_id = self.climate_zone_file.map_pixel(row.longitude, row.latitude)
         if zone_id == 0:
             return np.nan
             

@@ -52,8 +52,8 @@ def create_dataset_split(df: pd.DataFrame, shuffle: bool=False,
     image_col = 'image_path' if 'image_path' in df.columns else 'image'
     data_dict = {
         'image': df[image_col].tolist(),
-        'lng': df['lng'].values,
-        'lat': df['lat'].values,
+        'longitude': df['longitude'].values,
+        'latitude': df['latitude'].values,
         'elevation': df['elevation_reg'],
         'population': df['population_reg'],
         'temp_avg': df['temp_avg_reg'],
