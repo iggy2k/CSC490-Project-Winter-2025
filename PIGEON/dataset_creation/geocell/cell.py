@@ -289,8 +289,24 @@ class Cell:
         # Separate out points
         cluster_df = df[df['cluster'] == cluster][['longitude', 'latitude']]
         assert len(cluster_df.index) > 0, 'Dataframe does not contain a cluster'
-        cluster_points = [self._points[i] for i in cluster_df.index]
-        cluster_polys = [polygons[i] for i in cluster_df.index]
+        cluster_points = []
+        cluster_polys = []
+
+        for i in cluster_df.index:
+            if self._points.get(i):
+                cluster_points.append(self._points[i])
+            else:
+                print(f'WARN: self._points[{i}] not in {cluster_df.index}')
+
+        for i in cluster_df.index:
+            if polygons.get(i):
+                cluster_polys.append(polygons[i])
+            else:
+                print(f'WARN: polygons[{i}] not in {cluster_df.index}')
+        assert len(cluster_points) > 3, 'Polygon with less than 3 points'
+        assert len(cluster_polys) > 0, 'Zero valid polygons'
+        # cluster_points = [self._points[i] for i in cluster_df.index]
+        # cluster_polys = [polygons[i] for i in cluster_df.index]
 
         # Create new cell
         new_cell = self.__separate_points(cluster_points, cluster_polys, contain_points=True)
