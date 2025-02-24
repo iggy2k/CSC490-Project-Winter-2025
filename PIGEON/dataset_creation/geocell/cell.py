@@ -45,7 +45,7 @@ class Cell:
         Returns:
             int: coordinates in cell
         """
-        return len(self.points)
+        return len(self._points)
         
     @property
     def shape(self) -> Polygon:
@@ -93,7 +93,7 @@ class Cell:
         Returns:
             MultiPoint: multi-point shape
         """
-        return MultiPoint(self.points)
+        return MultiPoint(self._points)
 
     @property
     def coords(self) -> np.ndarray:
@@ -102,7 +102,7 @@ class Cell:
         Returns:
             np.ndarray: coordinates (longitude, latitude)
         """
-        return np.array([[x.x, x.y] for x in self.points])
+        return np.array([[x.x, x.y] for x in self._points])
 
     @property
     def centroid(self) -> np.ndarray:
@@ -124,7 +124,7 @@ class Cell:
         Returns:
             bool: whether the geocell is empty.
         """
-        return len(self.points) == 0
+        return len(self._points) == 0
 
     def subtract(self, other: Any):
         """Subtracts other cell from current cell.
@@ -142,14 +142,14 @@ class Cell:
         self._polygons = [diff_shape.buffer(0)]
 
         # Convert Point objects to tuples
-        A_tuples = {(point.x, point.y) for point in self.points}
+        A_tuples = {(point.x, point.y) for point in self._points}
         B_tuples = {(point.x, point.y) for point in other.points}
 
         # Find tuples in A that are not in B
         difference_tuples = A_tuples - B_tuples
 
         # Convert tuples back to Point objects if needed
-        self._points = [x for x in self.points if (x.x, x.y) in difference_tuples]
+        self._points = [x for x in self._points if (x.x, x.y) in difference_tuples]
 
     def combine(self, others: List):
         """Combines cell with other cells and deletes other cells' shapes and points.
@@ -192,7 +192,7 @@ class Cell:
         Returns:
             List: output
         """
-        return [self.cell_id, self.admin_1, self.country, len(self.points), len(self.polygons), self.shape]
+        return [self.cell_id, self.admin_1, self.country, len(self._points), len(self.polygons), self.shape]
 
     def to_pandas(self) -> gpd.GeoDataFrame:
         """Converts a cell to a geopandas DataFrame.
@@ -200,7 +200,7 @@ class Cell:
         Returns:
             gpd.GeoDataFrame: geopandas DataFrame.
         """
-        data = [[self.cell_id, p.x, p.y] for p in self.points]
+        data = [[self.cell_id, p.x, p.y] for p in self._points]
         df = pd.DataFrame(data=data, columns=CELL_COLUMNS)
         df = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude), crs=CRS)
         return df
@@ -268,7 +268,7 @@ class Cell:
         # Return area belonging to each Point
         df = pd.DataFrame({'geometry': polys})
         df = gpd.GeoDataFrame(df, geometry='geometry')
-        points = [Point(p[0], p[1]) for p in coords] if coords is not None else self.points
+        points = [Point(p[0], p[1]) for p in coords] if coords is not None else self._points
         indices = df.sindex.nearest(points, return_all=False)[1]
         return [polys[i] for i in indices]
 
@@ -289,7 +289,7 @@ class Cell:
         # Separate out points
         cluster_df = df[df['cluster'] == cluster][['longitude', 'latitude']]
         assert len(cluster_df.index) > 0, 'Dataframe does not contain a cluster'
-        cluster_points = [self.points[i] for i in cluster_df.index]
+        cluster_points = [self._points[i] for i in cluster_df.index]
         cluster_polys = [polygons[i] for i in cluster_df.index]
 
         # Create new cell
@@ -490,7 +490,7 @@ class Cell:
         return hash(self.cell_id)
         
     def __repr__(self):
-        rep = f'Cell(id={self.cell_id}, admin_1={self.admin_1}, country={self.country}, size={len(self.points)}, num_polys={len(self.polygons)})'
+        rep = f'Cell(id={self.cell_id}, admin_1={self.admin_1}, country={self.country}, size={len(self._points)}, num_polys={len(self.polygons)})'
         return rep
         
     def __str__(self):
