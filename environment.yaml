@@ -1,0 +1,44 @@
+name: pigeon-pack
+channels:
+  - pytorch
+  - huggingface
+  - conda-forge
+  - defaults
+dependencies:
+  - folium
+  - huggingface_hub
+  - ipywidgets
+  - jinja2
+  - jupyter
+  - markupsafe
+  - matplotlib-base
+  - matplotlib-inline
+  - nbconvert
+  - nbformat
+  - notebook
+  - numpy
+  - pandas
+  - pip
+  - pynvml
+  - pytorch
+  - scikit-learn
+  - scipy
+  - tqdm
+  - pandarallel
+  - pygeos
+  - datasets
+  - shapely
+  - geopandas
+  - pycountry
+  - transformers
+  - pip:
+    - shapely
+    - opencv-python
+    - geopy
+    - latlon_utils
+    - datasets
+    - global_land_mask
+    - srtm-py
+    - condacolab
+    - accelerate
+    - georasters
