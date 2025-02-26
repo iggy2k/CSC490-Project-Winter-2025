@@ -24,21 +24,18 @@ dependencies:
   - scikit-learn
   - scipy
   - tqdm
+  - georasters
   - pandarallel
   - pygeos
   - datasets
-  - shapely
+  - shapely=1.8.5
   - geopandas
   - pycountry
   - transformers
   - pip:
-    - shapely
-    - opencv-python
-    - geopy
     - latlon_utils
     - datasets
     - global_land_mask
     - srtm-py
     - condacolab
     - accelerate
-    - georasters
