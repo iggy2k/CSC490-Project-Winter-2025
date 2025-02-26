@@ -1,1 +1,8 @@
 testing/*
+datasets/osv5m/images/*
+datasets/osv5m/train/*
+datasets/osv5m/test/*
+datasets/osv5m/test.csv
+datasets/osv5m/train.csv
+data/*
+PROJECT/*
