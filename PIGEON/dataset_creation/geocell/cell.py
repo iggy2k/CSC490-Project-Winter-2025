@@ -12,13 +12,14 @@ from voronoi import voronoi_finite_polygons
 
 CRS = 'EPSG:4326'
 CELL_COLUMNS = ['id', 'longitude', 'latitude']
-GEOCELL_COLUMNS = ['name', 'admin_1', 'country', 'size', 'num_polygons', 'geometry']
+# GEOCELL_COLUMNS = ['name', 'admin_1', 'country', 'size', 'num_polygons', 'geometry']
+GEOCELL_COLUMNS = ['longitude', 'latitude', 'name', 'admin_1', 'country', 'size', 'num_polygons', 'geometry']
 
 class Cell:
     """Abstraction of a geocell.
     """
     def __init__(self, cell_id: str, admin_1: str, country: str,
-                 points: List[Point], polygons: List[Polygon]):
+                 points: List[Point], polygons: List[Polygon], longitude: float, latitude:float):
         """Initializes a geocell.
 
         Args:
@@ -27,11 +28,16 @@ class Cell:
             country (str): name of country
             points (List[Point]): collection of coordinates
             polygons (List[Polygon]): collection of polygons
+            longitude
+            latitude
         """
         self.cell_id = str(cell_id)
         self.admin_1 = str(admin_1)
         self.country = str(country)
         self._points = points
+
+        self.longitude = longitude
+        self.latitude = latitude
 
         if isinstance(polygons, Polygon):
             self._polygons = [polygons]
@@ -227,7 +233,7 @@ class Cell:
             new_shape = Polygon(new_shape.exterior)
 
         # Create new cell
-        new_cell = Cell(new_name, self.admin_1, self.country, points, [new_shape])
+        new_cell = Cell(new_name, self.admin_1, self.country, points, [new_shape], self.longitude, self.latitude)
         return new_cell
 
     def voronoi_polygons(self, coords: np.ndarray=None) -> List[Polygon]:
@@ -506,7 +512,7 @@ class Cell:
         return hash(self.cell_id)
         
     def __repr__(self):
-        rep = f'Cell(id={self.cell_id}, admin_1={self.admin_1}, country={self.country}, size={len(self._points)}, num_polys={len(self.polygons)})'
+        rep = f'Cell(id={self.cell_id}, admin_1={self.admin_1}, country={self.country}, size={len(self._points)}, num_polys={len(self.polygons)}, longitude={self.longitude}, latitude={self.latitude})'
         return rep
         
     def __str__(self):

@@ -8,7 +8,8 @@ from shapely.affinity import scale
 from cell import Cell
 
 CRS = 'EPSG:4326'
-GEOCELL_COLUMNS = ['name', 'admin_1', 'country', 'size', 'num_polygons', 'geometry']
+# GEOCELL_COLUMNS = ['name', 'admin_1', 'country', 'size', 'num_polygons', 'geometry']
+GEOCELL_COLUMNS = ['longitude', 'latitude', 'name', 'admin_1', 'country', 'size', 'num_polygons', 'geometry']
 OPTICS_PARAMS_GEOGUESSR = [(8, 0.05), (10, 0.025), (15, 0.015)]
 OPTICS_PARAMS_YFCC = [(300, 0.05), (400, 0.005), (1000, 0.0001)]
 
@@ -69,7 +70,7 @@ class CellCollection(set):
         Returns:
             List: copy of list of geocells
         """
-        return CellCollection([Cell(x.cell_id, x.admin_1, x.country, x.points, x.polygons) \
+        return CellCollection([Cell(x.cell_id, x.admin_1, x.country, x.points, x.polygons, x.longitude, x.latitude) \
                                for x in self])
 
     def to_pandas(self, country: str=None) -> gpd.GeoDataFrame:

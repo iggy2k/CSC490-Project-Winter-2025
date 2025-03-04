@@ -143,12 +143,15 @@ class GeocellCreator:
         admin_1 = df.iloc[0][LEVEL_NAMES[1]]
         country = df.iloc[0][LEVEL_NAMES[0]]
 
+        longitude = df.iloc[0]['longitude']
+        latitude = df.iloc[0]['latitude']
+
         # Get shapes
         polygon_ids = np.array([int(x) for x in df[LEVEL_NAMES[2]].unique()])
         points = df['geometry'].values.tolist()
         polygons = admin_2_boundary.iloc[polygon_ids].geometry.unique().tolist()
 
-        return [Cell(name, admin_1, country, points, polygons)]
+        return [Cell(name, admin_1, country, points, polygons, longitude, latitude)]
 
     def _load_geo_boundaries(self, most_granular: bool=False) -> Tuple[gpd.GeoDataFrame]:
         """Loads the geographic boundaries for countries and other admin levels.
@@ -199,8 +202,9 @@ class GeocellCreator:
             gpd.GeoDataFrame: df augmented with boundary ID data.
         """
         
+        # Change query_bulk -> query if you bump geopandas version beyond what it is 
         # https://github.com/geopandas/geopandas/issues/2823
-        found_points = df.sindex.query(ref_df.geometry, predicate='covers')
+        found_points = df.sindex.query_bulk(ref_df.geometry, predicate='covers')
 
         for i in range(len(ref_df.index)):
             mask = (found_points[0] == i)

@@ -4,5 +4,7 @@ datasets/osv5m/train/*
 datasets/osv5m/test/*
 datasets/osv5m/test.csv
 datasets/osv5m/train.csv
+datasets/osv5m/test.csv_filtered.csv
+datasets/osv5m/train.csv_filtered.csv
 data/*
 PROJECT/*
