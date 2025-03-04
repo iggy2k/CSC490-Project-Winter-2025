@@ -19,7 +19,7 @@ class Cell:
     """Abstraction of a geocell.
     """
     def __init__(self, cell_id: str, admin_1: str, country: str,
-                 points: List[Point], polygons: List[Polygon], longitude: float, latitude:float):
+                 points: List[Point], polygons: List[Polygon], longitude: str, latitude:str):
         """Initializes a geocell.
 
         Args:
@@ -36,8 +36,8 @@ class Cell:
         self.country = str(country)
         self._points = points
 
-        self.longitude = longitude
-        self.latitude = latitude
+        self.longitude = str(longitude)
+        self.latitude = str(latitude)
 
         if isinstance(polygons, Polygon):
             self._polygons = [polygons]

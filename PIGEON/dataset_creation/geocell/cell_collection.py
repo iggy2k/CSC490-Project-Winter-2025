@@ -23,7 +23,7 @@ class CellCollection(set):
         Raises:
             TypeError: Thrown if any supplied element is not of type Cell.
         """
-        print([x for x in cells[:10] if not x.empty])
+        # print([x for x in cells[:10] if not x.empty])
         cs = [x for x in cells if not x.empty]
         super(CellCollection, self).__init__(set(cs))
         
@@ -87,7 +87,7 @@ class CellCollection(set):
             cells = [x for x in self if x.country == country and x.empty == False]
         else:
             cells = [x for x in self if x.empty == False]
-        print(cells[:10])
+        # print(cells[:10])
         df = pd.DataFrame(data=[x.tolist() for x in cells], columns=GEOCELL_COLUMNS)
         df = gpd.GeoDataFrame(df, geometry='geometry', crs=CRS)
         return df
