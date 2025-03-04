@@ -87,8 +87,8 @@ class CellCollection(set):
             cells = [x for x in self if x.country == country and x.empty == False]
         else:
             cells = [x for x in self if x.empty == False]
-        # print(cells[:10])
-        df = pd.DataFrame(data=[x.tolist() for x in cells], columns=GEOCELL_COLUMNS)
+        data = [x.tolist() for x in cells]
+        df = pd.DataFrame(data=data, columns=GEOCELL_COLUMNS)
         df = gpd.GeoDataFrame(df, geometry='geometry', crs=CRS)
         return df
 
