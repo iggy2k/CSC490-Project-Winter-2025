@@ -204,7 +204,10 @@ class GeocellCreator:
         
         # Change query_bulk -> query if you bump geopandas version beyond what it is 
         # https://github.com/geopandas/geopandas/issues/2823
-        found_points = df.sindex.query_bulk(ref_df.geometry, predicate='covers')
+        if hasattr(df.sindex, 'query_bulk'):
+            found_points = df.sindex.query_bulk(ref_df.geometry, predicate='covers')
+        else: 
+            found_points = df.sindex.query(ref_df.geometry, predicate='covers')
 
         for i in range(len(ref_df.index)):
             mask = (found_points[0] == i)
