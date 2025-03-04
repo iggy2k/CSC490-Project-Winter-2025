@@ -198,7 +198,7 @@ class Cell:
         Returns:
             List: output
         """
-        return [self.cell_id, self.admin_1, self.country, len(self._points), len(self.polygons), self.shape]
+        return [self.cell_id, self.admin_1, self.country, len(self._points), len(self.polygons), self.shape, self.longitude, self.latitude]
 
     def to_pandas(self) -> gpd.GeoDataFrame:
         """Converts a cell to a geopandas DataFrame.
