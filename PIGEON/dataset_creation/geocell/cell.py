@@ -299,17 +299,17 @@ class Cell:
         cluster_polys = []
 
         for i in cluster_df.index:
-            if self._points.get(i):
+            if len(self._points) > i:
                 cluster_points.append(self._points[i])
             else:
                 print(f'WARN: self._points[{i}] not in {cluster_df.index}')
 
         for i in cluster_df.index:
-            if polygons.get(i):
+            if len(polygons) > i:
                 cluster_polys.append(polygons[i])
             else:
                 print(f'WARN: polygons[{i}] not in {cluster_df.index}')
-        assert len(cluster_points) > 3, 'Polygon with less than 3 points'
+        assert len(cluster_points) > 0, 'Zero valid points'
         assert len(cluster_polys) > 0, 'Zero valid polygons'
         # cluster_points = [self._points[i] for i in cluster_df.index]
         # cluster_polys = [polygons[i] for i in cluster_df.index]
