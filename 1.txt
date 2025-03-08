@@ -1,4 +1,0 @@
-fiona folium geopandas huggingface_hub ipython ipywidgets jinja2 jupyter markupsafe matplotlib-base matplotlib-inline nbconvert nbformat notebook numpy pandas pip pynvml python pytorch scikit-learn scipy torchvision tornado tqdm
-
-
-accelerate captum datasets fastapi ftfy georasters geopy latlon-utils pandarallel python-datauri reverse-geocoder shapely srtm-py tokenizers torch-summary torch-tb-profiler transformers uvicorn
