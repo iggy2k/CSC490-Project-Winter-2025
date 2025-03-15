@@ -39,6 +39,3 @@ def setup_dataset(local_path="path/to/your/local/490data.tar.gz"):
 
     print("📂 Extracting dataset...")
     os.system(f"tar -xvzf {DEST_PATH} -C .")
-
-    os.remove(DEST_PATH)
-    print("✅ Dataset setup completed!")
