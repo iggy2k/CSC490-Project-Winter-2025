@@ -9,9 +9,10 @@ from os.path import isfile, join
 import zipfile
 from tqdm.notebook import tqdm
 from PIL import Image
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 from huggingface_hub import snapshot_download
 import torch
+import torchvision.transforms as transforms
 
 def download_osv5m_dataset():
     """
@@ -107,3 +108,44 @@ class ImageCoordinateDataset(Dataset):
         if self.transform:
             image = self.transform(image)
         return image, torch.tensor(coordinates, dtype=torch.float32), self.data[idx][0]
+
+# Image transformations (preprocessing)
+mean = torch.tensor([0.485, 0.456, 0.406], dtype=torch.float32)
+std = torch.tensor([0.229, 0.224, 0.225], dtype=torch.float32)
+
+transform = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean.tolist(), std.tolist()),
+])
+
+def load_datasets(max_items=10000):
+    """
+    Loads the training and validation datasets.
+    """
+    train_dataset = ImageCoordinateDataset(csv_file='datasets/osv5m/train.csv', 
+                                           image_dirs=['datasets/osv5m/images/train/00'],
+                                           transform=transform,
+                                           max_items=max_items)
+
+    val_dataset = ImageCoordinateDataset(csv_file='datasets/osv5m/test.csv', 
+                                         image_dirs=['datasets/osv5m/images/test/00'],
+                                         transform=transform,
+                                         max_items=max_items)
+
+    print(f"✅ Loaded Train: {len(train_dataset)} images, Validation: {len(val_dataset)} images")
+    return train_dataset, val_dataset
+
+def create_dataloaders(train_dataset, val_dataset, batch_size=32):
+    """
+    Creates and returns PyTorch dataloaders for training and validation.
+    """
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    val_dataloader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True)
+    return train_dataloader, val_dataloader
+
+def get_device():
+    """
+    Returns the best available device (CUDA or CPU).
+    """
+    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
