@@ -1,18 +1,9 @@
-from google.colab import drive
 import os
 import subprocess
 import yaml
 from tqdm.notebook import tqdm
 
-def mount_drive():
-    """Mounts Google Drive if not already mounted."""
-    if not os.path.isdir('/content/drive/My Drive'):
-        drive.mount('/content/drive')
-        print("Google Drive mounted successfully.")
-    else:
-        print("Google Drive is already mounted.")
-
-def install_dependencies(env_yaml_path="./PROJECT/environment.yaml"):
+def install_dependencies(env_yaml_path="./environment.yaml"):
     """Installs required dependencies from an environment YAML file."""
     try:
         with open(env_yaml_path) as file_handle:
