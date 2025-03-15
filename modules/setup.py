@@ -2,9 +2,12 @@ import os
 import subprocess
 import yaml
 from tqdm.notebook import tqdm
+import sys
 
 def install_dependencies(env_yaml_path="./environment.yaml"):
     """Installs required dependencies from an environment YAML file."""
+    if "google.colab" in sys.modules:
+      env_yaml_path="./PROJECT/environment.yaml"
     try:
         with open(env_yaml_path) as file_handle:
             environment_data = yaml.safe_load(file_handle)
