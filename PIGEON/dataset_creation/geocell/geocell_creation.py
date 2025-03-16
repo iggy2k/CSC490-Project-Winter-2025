@@ -110,7 +110,7 @@ class GeocellCreator:
                 self.df = self._assign_boundary_ids(self.df, boundary, name)
                 self.df = self._apply_nearest_match(self.df, name)
 
-            #self.df.to_csv('data/data_yfcc_augmented_non_contaminated.csv', index=False)
+            self.df.to_csv('data/data_yfcc_augmented_non_contaminated.csv', index=False)
         
         else:
             boundaries = self._load_geo_boundaries(most_granular=True)

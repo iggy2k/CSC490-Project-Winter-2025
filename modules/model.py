@@ -25,7 +25,7 @@ embed_processor = CLIPProcessor.from_pretrained(CLIP_MODEL)
 #TODO: move over more stuff from PIGEON
 
 class GeoLocationModel(nn.Module):
-    def __init__(self):
+    def __init__(self, refiner):
         super(GeoLocationModel, self).__init__()
 
         self.panorama = False
@@ -38,6 +38,7 @@ class GeoLocationModel(nn.Module):
         self.freeze_base = False
         self.hierarchical = False
         self.num_candidates = 5
+        self.refiner = refiner
 
         self.transform = transforms.Compose([
             transforms.Resize((224, 224))
@@ -73,8 +74,9 @@ class GeoLocationModel(nn.Module):
         imgs_np = imgs
 
         pixel_values = self.processor(images=imgs_np, return_tensors='pt')['pixel_values']
+        pixel_values = pixel_values.cuda()
 
-        embedding = self.base_model(pixel_values=x)
+        embedding = self.base_model(pixel_values=pixel_values)
 
         if self.mode == 'transformer':
             embedding = embedding.last_hidden_state
@@ -101,7 +103,12 @@ class GeoLocationModel(nn.Module):
 
         loss_clf = self.loss_fnc(logits, label_probs)
 
-        return {'pred': pred_LLH, 'loss': loss_clf}
+        loss_refine, pred_LLH, preds_geocell = self.refiner(embedding,
+                                          initial_preds=pred_LLH,
+                                          candidate_cells=geocell_topk.indices,
+                                          candidate_probs=geocell_topk.values)
+
+        return {'pred': pred_LLH, 'loss': loss_clf, 'loss_refine' : loss_refine, 'preds_geocell': preds_geocell}
 
     def load_geocells(self, path: str) -> Tensor:
         """Loads geocell centroids and converts them to ECEF format
