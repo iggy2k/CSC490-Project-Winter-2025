@@ -11,7 +11,9 @@ from preprocessing.geo_utils import *
 from preprocessing.utils import *
 GEOCELL_PATH = 'data/geocells_yfcc.csv'
 
-CLIP_MODEL = 'openai/clip-vit-base-patch32'
+# CLIP_MODEL = 'openai/clip-vit-base-patch32'
+
+CLIP_MODEL = 'geolocal/StreetCLIP'
 
 from transformers import CLIPVisionModel, CLIPProcessor
 embed_model = CLIPVisionModel.from_pretrained(CLIP_MODEL)
