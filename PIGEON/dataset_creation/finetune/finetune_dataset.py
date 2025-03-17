@@ -49,45 +49,45 @@ def create_dataset_split(df: pd.DataFrame, shuffle: bool=False,
     Returns:
         Dataset: HuggingFace dataset
     """
-    image_col = 'image_path' if 'image_path' in df.columns else 'image'
+    image_col = 'image_path' if 'image_path' in df.columns else 'id'
     data_dict = {
-        'image': df[image_col].tolist(),
+        'id': df[image_col].tolist(),
         'longitude': df['longitude'].values,
         'latitude': df['latitude'].values,
-        'elevation': df['elevation_reg'],
-        'population': df['population_reg'],
-        'temp_avg': df['temp_avg_reg'],
-        'temp_diff': df['temp_diff_reg'],
-        'prec_avg': df['prec_avg_reg'],
-        'prec_diff': df['prec_diff_reg'],
+        # 'elevation': df['elevation_reg'],
+        # 'population': df['population_reg'],
+        # 'temp_avg': df['temp_avg_reg'],
+        # 'temp_diff': df['temp_diff_reg'],
+        # 'prec_avg': df['prec_avg_reg'],
+        # 'prec_diff': df['prec_diff_reg'],
         'index': df.index.values
     }
 
-    if 'climate' in df.columns:
-        data_dict['labels_climate'] = df['climate'].values
+    # if 'climate' in df.columns:
+    #     data_dict['labels_climate'] = df['climate'].values
 
-    if 'climate_zone' in df.columns:
-        data_dict['labels_climate'] = df['climate_zone'].values
+    # if 'climate_zone' in df.columns:
+    #     data_dict['labels_climate'] = df['climate_zone'].values
 
-    if type(data_dict['labels_climate'][0]) == str:
-        data_dict['labels_climate'] = np.array([CLIMATE_DICT[x] for x in data_dict['labels_climate']])
+    # if type(data_dict['labels_climate'][0]) == str:
+    #     data_dict['labels_climate'] = np.array([CLIMATE_DICT[x] for x in data_dict['labels_climate']])
 
-    if 'heading' in df.columns:
-        data_dict['heading'] = df['heading']
+    # if 'heading' in df.columns:
+    #     data_dict['heading'] = df['heading']
 
-    if 'month' in df.columns:
-        data_dict['labels_month'] = df['month']
+    # if 'month' in df.columns:
+    #     data_dict['labels_month'] = df['month']
 
-    if panorama:
-        data_dict['image_2'] = df['image_2'].tolist()
-        data_dict['image_3'] = df['image_3'].tolist()
-        data_dict['image_4'] = df['image_4'].tolist()
+    # if panorama:
+    #     data_dict['image_2'] = df['image_2'].tolist()
+    #     data_dict['image_3'] = df['image_3'].tolist()
+    #     data_dict['image_4'] = df['image_4'].tolist()
 
-    dataset = Dataset.from_dict(data_dict).cast_column('image', Image())
-    if panorama:
-        dataset = dataset.cast_column('image_2', Image())
-        dataset = dataset.cast_column('image_3', Image())
-        dataset = dataset.cast_column('image_4', Image())
+    dataset = Dataset.from_dict(data_dict).cast_column('id', Image())
+    # if panorama:
+    #     dataset = dataset.cast_column('image_2', Image())
+    #     dataset = dataset.cast_column('image_3', Image())
+    #     dataset = dataset.cast_column('image_4', Image())
 
     if shuffle:
         dataset = dataset.shuffle(seed=330)
@@ -113,15 +113,14 @@ def generate_finetune_dataset(sample: int=None, geo_augment: bool=True,
     data_df = pd.read_csv(metadata_path)
 
     # Process image paths
-    image_cols = [x for x in data_df.columns if 'image' in x]
+    image_cols = [x for x in data_df.columns if 'id' in x]
     if len(image_cols) == 1:
         print('Detected single image dataset.')
         if 'image_idx' in data_df.columns:
             data_df['image_path'] = data_df.apply(lambda row: path.join(image_path, f'{row.image_idx}.jpg'), axis=1)
-            data_df = data_df.rename(columns={'image': 'image_path'})
-
+            data_df = data_df.rename(columns={'id': 'image_path'})
         else:
-            data_df['image'] = data_df.apply(lambda row: path.join(image_path, row.image), axis=1)
+            data_df['id'] = data_df.apply(lambda row: path.join(image_path, str(row.id)), axis=1)
 
     else:
         print('Detected multi-image dataset.')
@@ -138,7 +137,8 @@ def generate_finetune_dataset(sample: int=None, geo_augment: bool=True,
 
     splits = []
     for split in ['train', 'val', 'test']:
-        data_split = data_df.loc[data_df['selection'] == split]
+        # data_split = data_df.loc[data_df['selection'] == split]
+        data_split = data_df.loc[:]
         splits.append(create_dataset_split(data_split, panorama=panorama))
 
     dataset = DatasetDict(

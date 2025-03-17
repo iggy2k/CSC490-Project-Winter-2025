@@ -58,14 +58,25 @@ def embed_images(loaded_model: Any, dataset: DatasetDict):
     # Cast to embed dataset
     for split_name, split_dataset in dataset.items():
         dataset[split_name] = EmbedDataset(split_dataset)
+
+
+    # dc = {}
+    for k,v in dataset['train']:
+        print(k,v)
+    #     if k == 'id':
+    #         v = str(v) + '.jpg' 
+    #     dc['train'][k] = v
+    # dataset = DatasetDict(dc)
     
     # Create dataloaders
     train_data = DataLoader(dataset['train'], EMBED_BATCH_SIZE_PER_GPU, shuffle=False, num_workers=8)
-    val_data = DataLoader(dataset['val'], EMBED_BATCH_SIZE_PER_GPU, shuffle=False, num_workers=8)
-    test_data = DataLoader(dataset['test'], EMBED_BATCH_SIZE_PER_GPU, shuffle=False, num_workers=8)
+    # val_data = DataLoader(dataset['val'], EMBED_BATCH_SIZE_PER_GPU, shuffle=False, num_workers=8)
+    # test_data = DataLoader(dataset['test'], EMBED_BATCH_SIZE_PER_GPU, shuffle=False, num_workers=8)
 
     # Data loader
-    model, train_data, val_data, test_data = accelerator.prepare(loaded_model, train_data, val_data, test_data)
+    # model, train_data, val_data, test_data = accelerator.prepare(loaded_model, train_data, val_data, test_data)
+
+    model, train_data = accelerator.prepare(loaded_model, train_data)
 
     # Set to train mode
     model.eval()
@@ -73,10 +84,10 @@ def embed_images(loaded_model: Any, dataset: DatasetDict):
     # Compute embeddings
     compute_embeddings('train', model, train_data, accelerator)
     accelerator.wait_for_everyone()
-    compute_embeddings('val', model, val_data, accelerator)
-    accelerator.wait_for_everyone()
-    compute_embeddings('test', model, test_data, accelerator)
-    accelerator.wait_for_everyone()
+    # compute_embeddings('val', model, val_data, accelerator)
+    # accelerator.wait_for_everyone()
+    # compute_embeddings('test', model, test_data, accelerator)
+    # accelerator.wait_for_everyone()
 
     # Cast back to normal dataset
     for split_name, split_dataset in dataset.items():

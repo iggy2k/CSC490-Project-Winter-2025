@@ -52,7 +52,7 @@ def load_geocell_df(path: str=GEOCELL_PATH) -> gpd.GeoDataFrame:
         gpd.GeoDataFrame: geocell dataframe
     """
     geocell_df = pd.read_csv(path)
-    geocell_df['polygon'] = geocell_df['polygon'].apply(wkt.loads)
+    geocell_df['polygon'] = geocell_df['geometry'].apply(wkt.loads)
     geocell_df = gpd.GeoDataFrame(geocell_df, geometry=gpd.points_from_xy(geocell_df.longitude, geocell_df.latitude), crs='EPSG:4326')
     geocell_df = geocell_df.set_geometry('geometry')
     return geocell_df
@@ -286,7 +286,7 @@ def preprocess(dataset: DatasetDict, geocell_path: str, embedder: Any=None,
         
         # Compute embeddings and save to disk
         #if os.path.exists(f'data/yfcc_embeddings/train.npy') == False:
-        # embed_images(embedder, dataset)
+        embed_images(embedder, dataset)
 
         # # Load embeddings from disk
         for split_name, split_dataset in dataset.items():

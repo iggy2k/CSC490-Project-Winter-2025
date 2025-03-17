@@ -154,7 +154,7 @@ class GeoLocationModel(nn.Module):
     #             for param in self.base_model.vision_model.encoder.layers[:-1].parameters():
     #                 param.requires_grad = False
 
-model = GeoLocationModel()
+# model = GeoLocationModel()
 
 # No need with accelerate
 # model = model.to(device)

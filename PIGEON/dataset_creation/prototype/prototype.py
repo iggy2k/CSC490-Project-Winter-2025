@@ -49,10 +49,11 @@ class ProtoDataset:
             sample (int, optional): If to sample from the dataframe. Defaults to None.
         """
         super().__init__()
-
-        self.df = df[df['selection'] == 'train'].copy().reset_index(drop=True)
+        # self.df = df[df['selection'] == 'train'].copy().reset_index(drop=True)
+        self.df = df.copy().reset_index(drop=True)
+        embedding_path = "datasets/osv5m/train.csv_filtered.csv"
         self.embeddings = DatasetDict.load_from_disk(embedding_path)
-        self.embeddings = self.embeddings['train']
+        # self.embeddings = self.embeddings['train']
         self.output = output_file
         self.cluster_args = cluster_args
         self._sample = sample
