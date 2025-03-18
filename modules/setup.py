@@ -11,7 +11,7 @@ def install_dependencies(env_yaml_path="./environment.yaml"):
     try:
         with open(env_yaml_path) as file_handle:
             environment_data = yaml.safe_load(file_handle)
-
+        _install_pip_package('numpy==1.26.4')
         for dependency in tqdm(environment_data["dependencies"], total=len(environment_data["dependencies"])):
             if isinstance(dependency, dict):  # If it's a pip-specific dependency list
                 for lib in dependency['pip']:
@@ -19,7 +19,7 @@ def install_dependencies(env_yaml_path="./environment.yaml"):
             else:
                 # Fixes ImportError: numpy.core.multiarray failed to import
                 if dependency.split("=")[0] == 'numpy':
-                    _install_pip_package('numpy==1.26.4')
+                    pass
                 else:
                     _install_pip_package(dependency.split("=")[0])
 
