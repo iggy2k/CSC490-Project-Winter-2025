@@ -15,8 +15,8 @@ class EmbedDataset:
         self.processor = CLIPProcessor.from_pretrained(CLIP_MODEL)
 
     def __getitem__(self, idx):
-        data = self.dataset[str(idx) + '.jpg']
-        pil_image = data['image']
+        data = self.dataset[idx]
+        pil_image = data['id']
         inputs = self.processor(images=pil_image, return_tensors='pt')
         pixel_values = inputs['pixel_values']
         return pixel_values.squeeze(), data['index']

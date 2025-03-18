@@ -120,7 +120,7 @@ def generate_finetune_dataset(sample: int=None, geo_augment: bool=True,
             data_df['image_path'] = data_df.apply(lambda row: path.join(image_path, f'{row.image_idx}.jpg'), axis=1)
             data_df = data_df.rename(columns={'id': 'image_path'})
         else:
-            data_df['id'] = data_df.apply(lambda row: path.join(image_path, str(row.id)), axis=1)
+            data_df['id'] = data_df.apply(lambda row: path.join(image_path, str(row.id) + '.jpg'), axis=1)
 
     else:
         print('Detected multi-image dataset.')
