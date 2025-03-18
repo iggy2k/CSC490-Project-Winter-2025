@@ -17,7 +17,11 @@ def install_dependencies(env_yaml_path="./environment.yaml"):
                 for lib in dependency['pip']:
                     _install_pip_package(lib.split("=")[0])
             else:
-                _install_pip_package(dependency.split("=")[0])
+                # Fixes ImportError: numpy.core.multiarray failed to import
+                if dependency.split("=")[0] == 'numpy':
+                    _install_pip_package('numpy==1.26.4')
+                else:
+                    _install_pip_package(dependency.split("=")[0])
 
         # Install additional required packages
         _install_pip_package("pycountry global_land_mask")
