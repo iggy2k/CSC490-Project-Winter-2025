@@ -1,1 +1,1 @@
-conda env create --name 3-8-10 --file=environment.yaml
+conda env create --name 3-8-10-ubuntu --file=environment_ubuntu.yaml python=3.8.10
